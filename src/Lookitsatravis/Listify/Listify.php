@@ -781,11 +781,12 @@ trait Listify
             $this->swappedAttributes = $this->getAttributes();
             $this->fill($this->getOriginal());
             $this->originalAttributesLoaded = TRUE;
-        } else {
-            if (count($this->swappedAttributes) == 0) $this->swappedAttributes = $this->getAttributes();
-            $this->fill($this->swappedAttributes);
-            $this->originalAttributesLoaded = FALSE;
+            return;
         }
+        if (count($this->swappedAttributes) == 0) $this->swappedAttributes = $this->getAttributes();
+        $this->fill($this->swappedAttributes);
+        $this->originalAttributesLoaded = FALSE;
+
     }
 
     /**
