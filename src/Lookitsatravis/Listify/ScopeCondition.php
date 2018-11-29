@@ -46,9 +46,8 @@ trait ScopeCondition
         if ($reflector->getName() != 'Illuminate\Database\Query\Builder') {
             throw new InvalidScopeException('Listify scope parameter must be a String, an Eloquent BelongsTo object, or a Query Builder object.');
         }
-        $theQuery = $this->getConditionStringFromQueryBuilder($theScope);
+        $theQuery = (new GetConditionStringFromQueryBuilder())->handle($theScope);
         $this->stringScopeValue = $theQuery;
-        $theScope = $theQuery;
-        return $theScope;
+        return $theQuery;
     }
 }
