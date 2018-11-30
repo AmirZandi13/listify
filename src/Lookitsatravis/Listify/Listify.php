@@ -675,7 +675,7 @@ trait Listify
      */
     private function checkScope ()
     {
-        if (!(new HasScopeChanged())->handle($this)) {
+        if (!(new HasScopeChanged($this))->handle()) {
             return;
         }
         $this->swapChangedAttributes();
