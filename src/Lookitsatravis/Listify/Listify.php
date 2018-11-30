@@ -50,7 +50,7 @@ trait Listify
      * Contains the current raw scope string. Used to check for changes.
      * @var string
      */
-    private $stringScopeValue = NULL;
+    public $stringScopeValue = NULL;
 
 
     // Configuration options are:
@@ -105,42 +105,6 @@ trait Listify
                 $model->$method_name();
             }
         });
-    }
-
-    /**
-     * Returns whether the scope has changed during the course of interaction with the model
-     * @return boolean
-     */
-    private function hasScopeChanged ()
-    {
-        $theScope = $this->scopeName();
-
-        if (is_string($theScope)) {
-            if (!$this->stringScopeValue) {
-                $this->stringScopeValue = $theScope;
-                return FALSE;
-            }
-
-            return $theScope != $this->stringScopeValue;
-        }
-
-        $reflector = new \ReflectionClass($theScope);
-        if ($reflector->getName() == 'Illuminate\Database\Eloquent\Relations\BelongsTo') {
-            $originalVal = $this->getOriginal()[$theScope->getForeignKey()];
-            $currentVal = $this->getAttribute($theScope->getForeignKey());
-
-            if ($originalVal != $currentVal) return TRUE;
-        } else if ($reflector->getName() == 'Illuminate\Database\Query\Builder') {
-            if (!$this->stringScopeValue) {
-                $this->stringScopeValue = (new GetConditionStringFromQueryBuilder())->handle($theScope);
-                return FALSE;
-            }
-
-            $theQuery = (new GetConditionStringFromQueryBuilder())->handle($theScope);
-            if ($theQuery != $this->stringScopeValue) return TRUE;
-        }
-
-        return FALSE;
     }
 
     /**
@@ -711,7 +675,7 @@ trait Listify
      */
     private function checkScope ()
     {
-        if (!$this->hasScopeChanged()) {
+        if (!(new HasScopeChanged())->handle($this)) {
             return;
         }
         $this->swapChangedAttributes();
